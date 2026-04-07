@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-04-07T00:50:43.013Z",
+  "workspace": "/Users/kclark/Development/outworktest",
+  "title": "Python Version Printer",
+  "overview": "A simple diagnostic tool for developers to quickly check their current Python version from the command line. The script prints the Python version in a human-readable format and exits cleanly.",
+  "qualityGates": [
+    "`python -m pytest` — unit test suite"
+  ],
+  "tasks": [
+    {
+      "id": "US-001",
+      "title": "Print Current Python Version",
+      "description": "As a developer, I want to run a script that prints the current Python version so that I can quickly diagnose my local environment.",
+      "acceptanceCriteria": [
+        "Running `python python-version-app/version.py` prints the Python version to stdout",
+        "Output is human-readable (e.g. `Python 3.11.4`)",
+        "Script exits with code 0 on success",
+        "`python -m pytest` passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "All 1 task completed successfully!",
+      "dependsOn": [],
+      "status": "done",
+      "lastRunAt": "2026-04-07T00:55:27.265Z",
+      "completedAt": "2026-04-07T00:55:27.265Z",
+      "resultSummary": "All 1 task completed successfully!"
+    },
+    {
+      "id": "US-002",
+      "title": "Unit Tests for Version Output",
+      "description": "As a developer, I want unit tests for the version printer so that I can verify correctness automatically.",
+      "acceptanceCriteria": [
+        "A test file exists at `python-version-app/test_version.py`",
+        "Tests verify the output contains the current major and minor version numbers",
+        "`python -m pytest python-version-app/test_version.py` passes with no failures"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "All 1 task completed successfully!",
+      "dependsOn": [],
+      "status": "done",
+      "lastRunAt": "2026-04-07T00:57:05.977Z",
+      "completedAt": "2026-04-07T00:57:05.977Z",
+      "resultSummary": "All 1 task completed successfully!"
+    }
+  ],
+  "openQuestions": [
+    "None"
+  ],
+  "rawMarkdown": "[PRD]\n# PRD: Python Version Printer\n\n## Overview\nA simple diagnostic tool for developers to quickly check their current Python version from the command line. The script prints the Python version in a human-readable format and exits cleanly.\n\n## Goals\n- Print the current Python version in a simple, human-readable format (e.g. \"Python 3.11.4\")\n- Serve as a lightweight diagnostic utility for local environment troubleshooting\n\n## Quality Gates\n\nThese commands must pass for every user story:\n- `python -m pytest` — unit test suite\n\n## User Stories\n\n### US-001: Print Current Python Version\n**Description:** As a developer, I want to run a script that prints the current Python version so that I can quickly diagnose my local environment.\n\n**Acceptance Criteria:**\n- [ ] Running `python python-version-app/version.py` prints the Python version to stdout\n- [ ] Output is human-readable (e.g. `Python 3.11.4`)\n- [ ] Script exits with code 0 on success\n- [ ] `python -m pytest` passes\n\n### US-002: Unit Tests for Version Output\n**Description:** As a developer, I want unit tests for the version printer so that I can verify correctness automatically.\n\n**Acceptance Criteria:**\n- [ ] A test file exists at `python-version-app/test_version.py`\n- [ ] Tests verify the output contains the current major and minor version numbers\n- [ ] `python -m pytest python-version-app/test_version.py` passes with no failures\n\n## Functional Requirements\n- **FR-1:** The script must print the current Python version to stdout in human-readable format (e.g. `Python 3.11.4`)\n- **FR-2:** The script must use the built-in `sys` module — no external dependencies\n- **FR-3:** The script must exit with code 0 after successfully printing the version\n- **FR-4:** A pytest-compatible test file must cover the version output logic\n\n## Non-Goals\n- Version comparison or minimum version enforcement\n- JSON or machine-parseable output\n- File logging\n- CI/CD pipeline integration\n- Cross-platform packaging or distribution\n\n## Technical Considerations\n- Uses Python built-in `sys` module — no pip installs required\n- Main file: `python-version-app/version.py`\n- Test file: `python-version-app/test_version.py`\n- `sys.version` provides the full version string; `sys.version_info` provides structured access\n\n## Success Metrics\n- Script runs without error and prints the Python version on any Python 3.x environment\n- `python -m pytest` suite passes with zero failures\n\n## Open Questions\n- None\n[/PRD]\n"
+}

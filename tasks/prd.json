@@ -1,52 +1,51 @@
 {
-  "generatedAt": "2026-04-07T00:50:43.013Z",
+  "generatedAt": "2026-04-07T01:27:35.971Z",
   "workspace": "/Users/kclark/Development/outworktest",
-  "title": "Python Version Printer",
-  "overview": "A simple diagnostic tool for developers to quickly check their current Python version from the command line. The script prints the Python version in a human-readable format and exits cleanly.",
+  "title": "Python Version App — CLI Flags",
+  "overview": "Add `--version` and `--help` CLI flags to the existing Python version app. This gives developers a standard CLI interface for quickly querying the Python version in use and understanding available options.",
   "qualityGates": [
-    "`python -m pytest` — unit test suite"
+    "`python -m pytest` — Run the test suite"
   ],
   "tasks": [
     {
       "id": "US-001",
-      "title": "Print Current Python Version",
-      "description": "As a developer, I want to run a script that prints the current Python version so that I can quickly diagnose my local environment.",
+      "title": "Add --version flag",
+      "description": "As a developer, I want to run the script with `--version` so that I can quickly see the Python version in use.",
       "acceptanceCriteria": [
-        "Running `python python-version-app/version.py` prints the Python version to stdout",
-        "Output is human-readable (e.g. `Python 3.11.4`)",
-        "Script exits with code 0 on success",
-        "`python -m pytest` passes"
+        "Running `python script.py --version` prints the Python version (e.g. `3.12.2`) to stdout",
+        "The output contains only the version string (no extra text)",
+        "The script exits with code 0 after printing the version"
       ],
       "priority": 1,
       "passes": true,
       "notes": "All 1 task completed successfully!",
       "dependsOn": [],
       "status": "done",
-      "lastRunAt": "2026-04-07T00:55:27.265Z",
-      "completedAt": "2026-04-07T00:55:27.265Z",
+      "lastRunAt": "2026-04-07T01:29:58.343Z",
+      "completedAt": "2026-04-07T01:29:58.343Z",
       "resultSummary": "All 1 task completed successfully!"
     },
     {
       "id": "US-002",
-      "title": "Unit Tests for Version Output",
-      "description": "As a developer, I want unit tests for the version printer so that I can verify correctness automatically.",
+      "title": "Add --help flag",
+      "description": "As a developer, I want to run the script with `--help` so that I can see usage instructions and available flags.",
       "acceptanceCriteria": [
-        "A test file exists at `python-version-app/test_version.py`",
-        "Tests verify the output contains the current major and minor version numbers",
-        "`python -m pytest python-version-app/test_version.py` passes with no failures"
+        "Running `python script.py --help` prints usage info and lists all available flags",
+        "The help output includes `--version` and `--help` flag descriptions",
+        "The script exits with code 0 after printing help"
       ],
       "priority": 2,
       "passes": true,
       "notes": "All 1 task completed successfully!",
       "dependsOn": [],
       "status": "done",
-      "lastRunAt": "2026-04-07T00:57:05.977Z",
-      "completedAt": "2026-04-07T00:57:05.977Z",
+      "lastRunAt": "2026-04-07T01:33:24.373Z",
+      "completedAt": "2026-04-07T01:33:24.373Z",
       "resultSummary": "All 1 task completed successfully!"
     }
   ],
   "openQuestions": [
-    "None"
+    "None at this time"
   ],
-  "rawMarkdown": "[PRD]\n# PRD: Python Version Printer\n\n## Overview\nA simple diagnostic tool for developers to quickly check their current Python version from the command line. The script prints the Python version in a human-readable format and exits cleanly.\n\n## Goals\n- Print the current Python version in a simple, human-readable format (e.g. \"Python 3.11.4\")\n- Serve as a lightweight diagnostic utility for local environment troubleshooting\n\n## Quality Gates\n\nThese commands must pass for every user story:\n- `python -m pytest` — unit test suite\n\n## User Stories\n\n### US-001: Print Current Python Version\n**Description:** As a developer, I want to run a script that prints the current Python version so that I can quickly diagnose my local environment.\n\n**Acceptance Criteria:**\n- [ ] Running `python python-version-app/version.py` prints the Python version to stdout\n- [ ] Output is human-readable (e.g. `Python 3.11.4`)\n- [ ] Script exits with code 0 on success\n- [ ] `python -m pytest` passes\n\n### US-002: Unit Tests for Version Output\n**Description:** As a developer, I want unit tests for the version printer so that I can verify correctness automatically.\n\n**Acceptance Criteria:**\n- [ ] A test file exists at `python-version-app/test_version.py`\n- [ ] Tests verify the output contains the current major and minor version numbers\n- [ ] `python -m pytest python-version-app/test_version.py` passes with no failures\n\n## Functional Requirements\n- **FR-1:** The script must print the current Python version to stdout in human-readable format (e.g. `Python 3.11.4`)\n- **FR-2:** The script must use the built-in `sys` module — no external dependencies\n- **FR-3:** The script must exit with code 0 after successfully printing the version\n- **FR-4:** A pytest-compatible test file must cover the version output logic\n\n## Non-Goals\n- Version comparison or minimum version enforcement\n- JSON or machine-parseable output\n- File logging\n- CI/CD pipeline integration\n- Cross-platform packaging or distribution\n\n## Technical Considerations\n- Uses Python built-in `sys` module — no pip installs required\n- Main file: `python-version-app/version.py`\n- Test file: `python-version-app/test_version.py`\n- `sys.version` provides the full version string; `sys.version_info` provides structured access\n\n## Success Metrics\n- Script runs without error and prints the Python version on any Python 3.x environment\n- `python -m pytest` suite passes with zero failures\n\n## Open Questions\n- None\n[/PRD]\n"
+  "rawMarkdown": "[PRD]\n# PRD: Python Version App — CLI Flags\n\n## Overview\nAdd `--version` and `--help` CLI flags to the existing Python version app. This gives developers a standard CLI interface for quickly querying the Python version in use and understanding available options.\n\n## Goals\n- Add `--version` flag that outputs the current Python version (e.g. `3.12.2`)\n- Add `--help` flag that displays basic usage and list of available flags\n- Use Python's built-in `argparse` module for standard CLI parsing\n- Preserve existing behavior when no arguments are provided\n\n## Quality Gates\n\nThese commands must pass for every user story:\n- `python -m pytest` — Run the test suite\n\n## User Stories\n\n### US-001: Add --version flag\n**Description:** As a developer, I want to run the script with `--version` so that I can quickly see the Python version in use.\n\n**Acceptance Criteria:**\n- [ ] Running `python script.py --version` prints the Python version (e.g. `3.12.2`) to stdout\n- [ ] The output contains only the version string (no extra text)\n- [ ] The script exits with code 0 after printing the version\n\n### US-002: Add --help flag\n**Description:** As a developer, I want to run the script with `--help` so that I can see usage instructions and available flags.\n\n**Acceptance Criteria:**\n- [ ] Running `python script.py --help` prints usage info and lists all available flags\n- [ ] The help output includes `--version` and `--help` flag descriptions\n- [ ] The script exits with code 0 after printing help\n\n## Functional Requirements\n- FR-1: The script must accept `--version` as a CLI argument and print the Python version (major.minor.patch) to stdout.\n- FR-2: The script must accept `--help` as a CLI argument and print usage instructions with all available flags.\n- FR-3: Both flags must cause the script to exit cleanly with code 0.\n- FR-4: Running the script with no arguments must preserve existing behavior (printing the Python version).\n\n## Non-Goals\n- No additional system info (OS, architecture) in `--version` output\n- No JSON or machine-readable output format\n- No separate entry point or installable package\n\n## Technical Considerations\n- Use Python's built-in `argparse` module for CLI argument parsing\n- Existing script behavior (no args) must remain unchanged\n- Quality gate: `python -m pytest` must pass\n\n## Success Metrics\n- `--version` flag outputs correct Python version string\n- `--help` flag outputs usage and flag list\n- All pytest tests pass\n- No regressions in existing behavior\n\n## Open Questions\n- None at this time\n[/PRD]\n"
 }

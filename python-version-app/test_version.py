@@ -143,3 +143,76 @@ def test_help_flag_includes_usage_line():
     assert "usage" in output, (
         f"Expected 'usage' in --help output, got: {result.stdout!r}"
     )
+
+
+# ---------------------------------------------------------------------------
+# New tests — --json flag
+# ---------------------------------------------------------------------------
+
+
+def test_json_flag_exit_code_zero():
+    """--json flag should exit with code 0 (not crash)."""
+    result = run_version_script("--json")
+    assert result.returncode == 0, (
+        f"Expected exit code 0 for --json, got: {result.returncode}"
+    )
+
+
+def test_json_flag_no_stderr():
+    """--json flag should not write anything to stderr."""
+    result = run_version_script("--json")
+    assert result.stderr == "", (
+        f"Expected empty stderr for --json, got: {result.stderr!r}"
+    )
+
+
+def test_json_flag_output_is_valid_json():
+    """--json flag output should be parseable JSON."""
+    import json
+    result = run_version_script("--json")
+    output = result.stdout.strip()
+    try:
+        json.loads(output)
+    except json.JSONDecodeError as e:
+        raise AssertionError(f"--json output is not valid JSON: {output!r}") from e
+
+
+def test_json_flag_output_has_python_version_key():
+    """--json output must include a 'python_version' key."""
+    import json
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    assert "python_version" in data, (
+        f"Expected 'python_version' key in JSON output, got keys: {list(data.keys())}"
+    )
+
+
+def test_json_flag_output_has_os_version_key():
+    """--json output must include an 'os_version' key."""
+    import json
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    assert "os_version" in data, (
+        f"Expected 'os_version' key in JSON output, got keys: {list(data.keys())}"
+    )
+
+
+def test_json_flag_python_version_matches_current():
+    """--json python_version should match the running interpreter's version."""
+    import json
+    v = sys.version_info
+    expected = f"{v.major}.{v.minor}.{v.micro}"
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    assert data["python_version"] == expected, (
+        f"Expected python_version '{expected}', got: {data['python_version']!r}"
+    )
+
+
+def test_help_flag_includes_json_flag_description():
+    """--help output should mention the --json flag."""
+    result = run_version_script("--help")
+    output = result.stdout
+    assert "--json" in output, (
+        f"Expected '--json' in --help output, got: {output!r}"
+    )

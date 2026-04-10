@@ -243,3 +243,70 @@ def test_json_flag_output_contains_os_version_key():
     assert "os_version" in data, (
         f"Expected 'os_version' key in --json output, got keys: {list(data.keys())}"
     )
+
+
+# ---------------------------------------------------------------------------
+# --json --os combined flag
+# ---------------------------------------------------------------------------
+
+
+def test_json_os_flag_output_is_valid_json():
+    """--json --os output should be parseable JSON."""
+    result = run_version_script("--json", "--os")
+    output = result.stdout.strip()
+    try:
+        json.loads(output)
+    except json.JSONDecodeError as exc:
+        raise AssertionError(f"--json --os output is not valid JSON: {output!r}") from exc
+
+
+def test_json_os_flag_contains_os_version_key():
+    """--json --os output should contain an 'os_version' key."""
+    result = run_version_script("--json", "--os")
+    data = json.loads(result.stdout.strip())
+    assert "os_version" in data, (
+        f"Expected 'os_version' key in --json --os output, got keys: {list(data.keys())}"
+    )
+
+
+def test_json_os_flag_excludes_python_version_key():
+    """--json --os output should NOT contain a 'python_version' key."""
+    result = run_version_script("--json", "--os")
+    data = json.loads(result.stdout.strip())
+    assert "python_version" not in data, (
+        f"Expected NO 'python_version' key in --json --os output, got keys: {list(data.keys())}"
+    )
+
+
+def test_json_os_flag_only_one_key():
+    """--json --os output should contain exactly one key."""
+    result = run_version_script("--json", "--os")
+    data = json.loads(result.stdout.strip())
+    assert len(data) == 1, (
+        f"Expected exactly 1 key in --json --os output, got: {list(data.keys())}"
+    )
+
+
+def test_json_alone_includes_both_keys():
+    """--json alone should include both 'python_version' and 'os_version'."""
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    assert "python_version" in data and "os_version" in data, (
+        f"Expected both keys in --json output, got keys: {list(data.keys())}"
+    )
+
+
+def test_json_os_flag_exit_code_zero():
+    """--json --os should exit with code 0."""
+    result = run_version_script("--json", "--os")
+    assert result.returncode == 0, (
+        f"Expected exit code 0 for --json --os, got: {result.returncode}"
+    )
+
+
+def test_json_os_flag_no_stderr():
+    """--json --os should not write anything to stderr."""
+    result = run_version_script("--json", "--os")
+    assert result.stderr == "", (
+        f"Expected empty stderr for --json --os, got: {result.stderr!r}"
+    )

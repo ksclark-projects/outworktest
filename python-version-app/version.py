@@ -27,6 +27,11 @@ def main():
         action="store_true",
         help="Output python_version and os_version as a JSON object and exit.",
     )
+    parser.add_argument(
+        "--os",
+        action="store_true",
+        help="When combined with --json, restrict output to only os_version.",
+    )
     args = parser.parse_args()
 
     if args.json:
@@ -35,7 +40,10 @@ def main():
             os_ver = f"macOS {platform.mac_ver()[0]}"
         else:
             os_ver = f"{system} {platform.release()}"
-        print(json.dumps({"python_version": get_version_string(), "os_version": os_ver}))
+        if args.os:
+            print(json.dumps({"os_version": os_ver}))
+        else:
+            print(json.dumps({"python_version": get_version_string(), "os_version": os_ver}))
     elif args.version:
         print(get_version_string())
     elif args.os_version:

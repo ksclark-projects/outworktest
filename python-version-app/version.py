@@ -23,9 +23,14 @@ def main():
         help="Print the OS name and version (e.g. macOS 14.4.1) and exit.",
     )
     parser.add_argument(
+        "--os",
+        action="store_true",
+        help="When combined with --json, include only os_version in the JSON output.",
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
-        help="Output python_version and os_version as a JSON object and exit.",
+        help="Output version info as a JSON object. With --os, outputs only os_version; otherwise outputs both python_version and os_version.",
     )
     args = parser.parse_args()
 
@@ -35,7 +40,10 @@ def main():
             os_ver = f"macOS {platform.mac_ver()[0]}"
         else:
             os_ver = f"{system} {platform.release()}"
-        print(json.dumps({"python_version": get_version_string(), "os_version": os_ver}))
+        if args.os:
+            print(json.dumps({"os_version": os_ver}))
+        else:
+            print(json.dumps({"python_version": get_version_string(), "os_version": os_ver}))
     elif args.version:
         print(get_version_string())
     elif args.os_version:

@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-04-07T23:38:02.584Z",
+  "workspace": "/Users/kclark/Development/outworktest",
+  "title": "JSON Output Flag",
+  "overview": "Add a `--json` flag to the Python version app that outputs environment information in machine-readable JSON format. This helps developers quickly inspect their Python and OS environment in a structured, parseable way — useful for debugging, scripting, and tooling integrations.",
+  "qualityGates": [
+    "`python -m pytest`"
+  ],
+  "tasks": [
+    {
+      "id": "US-001",
+      "title": "Add --json flag to CLI argument parser",
+      "description": "As a developer, I want a `--json` flag recognized by the CLI so that I can request JSON-formatted output.",
+      "acceptanceCriteria": [
+        "`--json` is a valid CLI flag (no error when passed)",
+        "`--help` lists `--json` with a short description",
+        "Passing `--json` alone does not crash the program"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": "",
+      "dependsOn": [],
+      "status": "pending"
+    },
+    {
+      "id": "US-002",
+      "title": "Output Python version as JSON",
+      "description": "As a developer, I want `python version_app.py --json` to print the Python version as a JSON object so that I can parse it in scripts.",
+      "acceptanceCriteria": [
+        "Running `python version_app.py --json` prints valid JSON to stdout",
+        "JSON includes a `\"python_version\"` key with the version string (e.g. `\"3.11.4\"`)",
+        "JSON includes an `\"os_version\"` key with the OS version string",
+        "Output is valid JSON (parseable by `json.loads`)",
+        "No extra non-JSON text is printed to stdout"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": "",
+      "dependsOn": [],
+      "status": "pending"
+    },
+    {
+      "id": "US-003",
+      "title": "--json combines with --os flag",
+      "description": "As a developer, I want `--json --os` to return OS info as JSON so that I can selectively request structured data.",
+      "acceptanceCriteria": [
+        "`python version_app.py --json --os` prints valid JSON with `\"os_version\"` key",
+        "`python version_app.py --json --os` does NOT include `\"python_version\"` key (only OS was requested)",
+        "`python version_app.py --json` (no other flags) includes both `\"python_version\"` and `\"os_version\"`"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": "",
+      "dependsOn": [],
+      "status": "pending"
+    },
+    {
+      "id": "US-004",
+      "title": "Write tests for --json flag behavior",
+      "description": "As a developer, I want automated tests for the `--json` flag so that behavior is verified and regressions are caught.",
+      "acceptanceCriteria": [
+        "Test: `--json` alone produces valid JSON with both keys",
+        "Test: `--json --os` produces JSON with only `\"os_version\"` key",
+        "Test: JSON output is parseable via `json.loads`",
+        "All existing tests continue to pass"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "",
+      "dependsOn": [],
+      "status": "pending"
+    }
+  ],
+  "openQuestions": [
+    "Should `--json` combined with `--python` (if that flag exists) output only `python_version`? Assumed yes, but not explicitly tested in this PRD.",
+    "Should invalid flag combinations (e.g. `--json` with no recognized data flags) return an empty JSON object `{}` or an error?"
+  ],
+  "rawMarkdown": "[PRD]\n# PRD: JSON Output Flag\n\n## Overview\n\nAdd a `--json` flag to the Python version app that outputs environment information in machine-readable JSON format. This helps developers quickly inspect their Python and OS environment in a structured, parseable way — useful for debugging, scripting, and tooling integrations.\n\n## Goals\n\n- Provide a `--json` modifier flag that formats output as a JSON object\n- Support combining `--json` with other flags (e.g. `--json --os` returns OS info as JSON)\n- When used alone, `--json` outputs both Python version and OS version\n- Keep output valid, parseable JSON at all times\n\n## Quality Gates\n\nThese commands must pass for every user story:\n\n- `python -m pytest`\n\n## User Stories\n\n### US-001: Add --json flag to CLI argument parser\n\n**Description:** As a developer, I want a `--json` flag recognized by the CLI so that I can request JSON-formatted output.\n\n**Acceptance Criteria:**\n\n- [ ] `--json` is a valid CLI flag (no error when passed)\n- [ ] `--help` lists `--json` with a short description\n- [ ] Passing `--json` alone does not crash the program\n\n---\n\n### US-002: Output Python version as JSON\n\n**Description:** As a developer, I want `python version_app.py --json` to print the Python version as a JSON object so that I can parse it in scripts.\n\n**Acceptance Criteria:**\n\n- [ ] Running `python version_app.py --json` prints valid JSON to stdout\n- [ ] JSON includes a `\"python_version\"` key with the version string (e.g. `\"3.11.4\"`)\n- [ ] JSON includes an `\"os_version\"` key with the OS version string\n- [ ] Output is valid JSON (parseable by `json.loads`)\n- [ ] No extra non-JSON text is printed to stdout\n\n---\n\n### US-003: --json combines with --os flag\n\n**Description:** As a developer, I want `--json --os` to return OS info as JSON so that I can selectively request structured data.\n\n**Acceptance Criteria:**\n\n- [ ] `python version_app.py --json --os` prints valid JSON with `\"os_version\"` key\n- [ ] `python version_app.py --json --os` does NOT include `\"python_version\"` key (only OS was requested)\n- [ ] `python version_app.py --json` (no other flags) includes both `\"python_version\"` and `\"os_version\"`\n\n---\n\n### US-004: Write tests for --json flag behavior\n\n**Description:** As a developer, I want automated tests for the `--json` flag so that behavior is verified and regressions are caught.\n\n**Acceptance Criteria:**\n\n- [ ] Test: `--json` alone produces valid JSON with both keys\n- [ ] Test: `--json --os` produces JSON with only `\"os_version\"` key\n- [ ] Test: JSON output is parseable via `json.loads`\n- [ ] All existing tests continue to pass\n\n## Functional Requirements\n\n- FR-1: The CLI must accept `--json` as an optional flag\n- FR-2: When `--json` is passed without other data flags, output must include both `python_version` and `os_version` keys\n- FR-3: When `--json` is combined with `--os`, output must include only `os_version`\n- FR-4: All JSON output must be valid and parseable\n- FR-5: Non-JSON (plain text) output must remain unchanged when `--json` is not passed\n\n## Non-Goals\n\n- CSV or XML output formats\n- Writing JSON output to a file (stdout only)\n- Pretty-printing / indented JSON (compact single-line is acceptable)\n- Adding new data fields beyond Python version and OS version\n\n## Technical Considerations\n\n- Use Python's built-in `json` module for serialization\n- Reuse existing flag-parsing logic (argparse) — add `--json` as a `store_true` argument\n- Existing `--python` and `--os` flags should remain unchanged in non-JSON mode\n- Tests should use `subprocess` or direct function calls to verify output\n\n## Success Metrics\n\n- `python -m pytest` passes with all new tests included\n- `python version_app.py --json` outputs valid JSON\n- No regressions in existing plain-text output behavior\n\n## Open Questions\n\n- Should `--json` combined with `--python` (if that flag exists) output only `python_version`? Assumed yes, but not explicitly tested in this PRD.\n- Should invalid flag combinations (e.g. `--json` with no recognized data flags) return an empty JSON object `{}` or an error?\n[/PRD]\n"
+}

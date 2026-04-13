@@ -36,6 +36,14 @@ def main():
         }))
     elif args.version:
         print(get_version_string())
+    elif args.os_version:
+        system = platform.system()
+        if system == "Darwin":
+            version = platform.mac_ver()[0]
+            print(f"macOS {version}")
+        else:
+            version = platform.release()
+            print(f"{system} {version}")
     else:
         print(f"Python {get_version_string()}")
 

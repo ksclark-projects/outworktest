@@ -218,3 +218,27 @@ def test_help_flag_includes_json_flag_description():
     assert "--json" in output, (
         f"Expected '--json' in --help output, got: {output!r}"
     )
+
+
+def test_json_flag_output_has_timestamp_key():
+    """--json output must include a 'timestamp' key."""
+    import json
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    assert "timestamp" in data, (
+        f"Expected 'timestamp' key in JSON output, got keys: {list(data.keys())}"
+    )
+
+
+def test_json_flag_timestamp_is_valid_datetime():
+    """--json 'timestamp' value must be parseable as an ISO 8601 datetime string."""
+    import datetime
+    import json
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    try:
+        datetime.datetime.fromisoformat(data["timestamp"])
+    except (ValueError, KeyError) as e:
+        raise AssertionError(
+            f"'timestamp' is not a valid ISO 8601 datetime: {data.get('timestamp')!r}"
+        ) from e

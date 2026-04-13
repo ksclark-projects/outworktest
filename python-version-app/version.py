@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import json
 import platform
 import sys
@@ -33,17 +34,10 @@ def main():
         print(json.dumps({
             "python_version": get_version_string(),
             "os_version": get_os_version(),
+            "timestamp": datetime.datetime.now().isoformat(),
         }))
     elif args.version:
         print(get_version_string())
-    elif args.os_version:
-        system = platform.system()
-        if system == "Darwin":
-            version = platform.mac_ver()[0]
-            print(f"macOS {version}")
-        else:
-            version = platform.release()
-            print(f"{system} {version}")
     else:
         print(f"Python {get_version_string()}")
 

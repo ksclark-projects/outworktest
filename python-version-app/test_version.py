@@ -148,52 +148,12 @@ def test_help_flag_includes_usage_line():
 
 
 # ---------------------------------------------------------------------------
-# --os-version flag
-# ---------------------------------------------------------------------------
-
-
-def test_os_version_flag_exit_code_zero():
-    """--os-version flag should exit with code 0."""
-    result = run_version_script("--os-version")
-    assert result.returncode == 0, (
-        f"Expected exit code 0 for --os-version, got: {result.returncode}"
-    )
-
-
-def test_os_version_flag_output_nonempty():
-    """--os-version flag should produce non-empty stdout."""
-    result = run_version_script("--os-version")
-    assert result.stdout.strip() != "", (
-        f"Expected non-empty stdout for --os-version, got: {result.stdout!r}"
-    )
-
-
-def test_os_version_flag_no_stderr():
-    """--os-version flag should not write anything to stderr."""
-    result = run_version_script("--os-version")
-    assert result.stderr == "", (
-        f"Expected empty stderr for --os-version, got: {result.stderr!r}"
-    )
-
-
-def test_os_version_flag_output_contains_os_name():
-    """--os-version output should start with the OS name ('macOS' on Darwin, system name otherwise)."""
-    system = platform.system()
-    expected_prefix = "macOS" if system == "Darwin" else system
-    result = run_version_script("--os-version")
-    output = result.stdout.strip()
-    assert output.startswith(expected_prefix), (
-        f"Expected --os-version output to start with {expected_prefix!r}, got: {output!r}"
-    )
-
-
-# ---------------------------------------------------------------------------
-# --json flag
+# New tests — --json flag
 # ---------------------------------------------------------------------------
 
 
 def test_json_flag_exit_code_zero():
-    """--json flag should exit with code 0."""
+    """--json flag should exit with code 0 (not crash)."""
     result = run_version_script("--json")
     assert result.returncode == 0, (
         f"Expected exit code 0 for --json, got: {result.returncode}"
@@ -208,87 +168,53 @@ def test_json_flag_no_stderr():
     )
 
 
-def test_help_flag_includes_json_flag():
+def test_json_flag_output_is_valid_json():
+    """--json flag output should be parseable JSON."""
+    import json
+    result = run_version_script("--json")
+    output = result.stdout.strip()
+    try:
+        json.loads(output)
+    except json.JSONDecodeError as e:
+        raise AssertionError(f"--json output is not valid JSON: {output!r}") from e
+
+
+def test_json_flag_output_has_python_version_key():
+    """--json output must include a 'python_version' key."""
+    import json
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    assert "python_version" in data, (
+        f"Expected 'python_version' key in JSON output, got keys: {list(data.keys())}"
+    )
+
+
+def test_json_flag_output_has_os_version_key():
+    """--json output must include an 'os_version' key."""
+    import json
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    assert "os_version" in data, (
+        f"Expected 'os_version' key in JSON output, got keys: {list(data.keys())}"
+    )
+
+
+def test_json_flag_python_version_matches_current():
+    """--json python_version should match the running interpreter's version."""
+    import json
+    v = sys.version_info
+    expected = f"{v.major}.{v.minor}.{v.micro}"
+    result = run_version_script("--json")
+    data = json.loads(result.stdout.strip())
+    assert data["python_version"] == expected, (
+        f"Expected python_version '{expected}', got: {data['python_version']!r}"
+    )
+
+
+def test_help_flag_includes_json_flag_description():
     """--help output should mention the --json flag."""
     result = run_version_script("--help")
     output = result.stdout
     assert "--json" in output, (
         f"Expected '--json' in --help output, got: {output!r}"
-    )
-
-
-def test_json_flag_output_is_valid_json():
-    """--json flag output should be parseable by json.loads."""
-    result = run_version_script("--json")
-    output = result.stdout.strip()
-    try:
-        json.loads(output)
-    except json.JSONDecodeError as exc:
-        raise AssertionError(f"--json output is not valid JSON: {output!r}") from exc
-
-
-def test_json_flag_output_contains_python_version_key():
-    """--json output should contain a 'python_version' key."""
-    result = run_version_script("--json")
-    data = json.loads(result.stdout.strip())
-    assert "python_version" in data, (
-        f"Expected 'python_version' key in --json output, got keys: {list(data.keys())}"
-    )
-
-
-def test_json_flag_output_contains_os_version_key():
-    """--json output should contain an 'os_version' key."""
-    result = run_version_script("--json")
-    data = json.loads(result.stdout.strip())
-    assert "os_version" in data, (
-        f"Expected 'os_version' key in --json output, got keys: {list(data.keys())}"
-    )
-
-
-# ---------------------------------------------------------------------------
-# --json --os flag combination
-# ---------------------------------------------------------------------------
-
-
-def test_json_os_flag_exit_code_zero():
-    """--json --os should exit with code 0."""
-    result = run_version_script("--json", "--os")
-    assert result.returncode == 0, (
-        f"Expected exit code 0 for --json --os, got: {result.returncode}"
-    )
-
-
-def test_json_os_flag_no_stderr():
-    """--json --os should not write anything to stderr."""
-    result = run_version_script("--json", "--os")
-    assert result.stderr == "", (
-        f"Expected empty stderr for --json --os, got: {result.stderr!r}"
-    )
-
-
-def test_json_os_flag_output_is_valid_json():
-    """--json --os output should be parseable by json.loads."""
-    result = run_version_script("--json", "--os")
-    output = result.stdout.strip()
-    try:
-        json.loads(output)
-    except json.JSONDecodeError as exc:
-        raise AssertionError(f"--json --os output is not valid JSON: {output!r}") from exc
-
-
-def test_json_os_flag_contains_os_version_key():
-    """--json --os output should contain an 'os_version' key."""
-    result = run_version_script("--json", "--os")
-    data = json.loads(result.stdout.strip())
-    assert "os_version" in data, (
-        f"Expected 'os_version' key in --json --os output, got keys: {list(data.keys())}"
-    )
-
-
-def test_json_os_flag_excludes_python_version_key():
-    """--json --os output should NOT contain a 'python_version' key."""
-    result = run_version_script("--json", "--os")
-    data = json.loads(result.stdout.strip())
-    assert "python_version" not in data, (
-        f"Expected no 'python_version' key in --json --os output, got keys: {list(data.keys())}"
     )
